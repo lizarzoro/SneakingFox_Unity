@@ -52,50 +52,50 @@
 
 //    }
 
-//    void Movement()
+//void Movement()
+//{
+//    //Character Move
+//    float move = Input.GetAxisRaw("Horizontal");
+//    if (Input.GetKey(KeyCode.Z))
 //    {
-//        //Character Move
-//        float move = Input.GetAxisRaw("Horizontal");
-//        if (Input.GetKey(KeyCode.Z))
-//        {
-//            //Run
-//            rb.velocity = new Vector2(move * speed * Time.deltaTime * 3, rb.velocity.y);
-//            running = true;
-//        }
-//        else
-//        {
-//            //Walk
-//            rb.velocity = new Vector2(move * speed * Time.deltaTime, rb.velocity.y);
-//            running = false;
-//        }
-
-//        //Turn
-//        if (rb.velocity.x < 0)
-//        {
-//            sp.flipX = true;
-//        }
-//        else if (rb.velocity.x > 0)
-//        {
-//            sp.flipX = false;
-//        }
-//        //Movement Animation
-//        if (rb.velocity.x != 0 && running == false)
-//        {
-//            anim.SetBool("Walking", true);
-//        }
-//        else
-//        {
-//            anim.SetBool("Walking", false);
-//        }
-//        if (rb.velocity.x != 0 && running == true)
-//        {
-//            anim.SetBool("Running", true);
-//        }
-//        else
-//        {
-//            anim.SetBool("Running", false);
-//        }
+//        //Run
+//        rb.velocity = new Vector2(move * speed * Time.deltaTime * 3, rb.velocity.y);
+//        running = true;
 //    }
+//    else
+//    {
+//        //Walk
+//        rb.velocity = new Vector2(move * speed * Time.deltaTime, rb.velocity.y);
+//        running = false;
+//    }
+
+//    //Turn
+//    if (rb.velocity.x < 0)
+//    {
+//        sp.flipX = true;
+//    }
+//    else if (rb.velocity.x > 0)
+//    {
+//        sp.flipX = false;
+//    }
+//    //Movement Animation
+//    if (rb.velocity.x != 0 && running == false)
+//    {
+//        anim.SetBool("Walking", true);
+//    }
+//    else
+//    {
+//        anim.SetBool("Walking", false);
+//    }
+//    if (rb.velocity.x != 0 && running == true)
+//    {
+//        anim.SetBool("Running", true);
+//    }
+//    else
+//    {
+//        anim.SetBool("Running", false);
+//    }
+//}
 
 //    void Jump()
 //    {
