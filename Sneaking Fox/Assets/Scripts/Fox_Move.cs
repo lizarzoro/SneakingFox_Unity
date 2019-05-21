@@ -13,9 +13,22 @@ public class Fox_Move : MonoBehaviour
     private float rateOfHit;
     private GameObject[] life;
     private int qtdLife;
+    
     private float inputHorizontal, inputVertical;
-    public float distance; // 사다리 거리
+    
+
+    // 사다리 타기
     public LayerMask whatIsLadder;
+    public float distance;
+
+    // 점프
+    private float moveInput;
+    private bool isGrounded;
+    public Transform groundCheck;
+    public float checkRadius;
+    public LayerMask whatIsGround;
+    private int extraJumps;
+    public int extraJumpsValue;
 
     // Use this for initialization
     void Start()
@@ -32,12 +45,30 @@ public class Fox_Move : MonoBehaviour
         rateOfHit = Time.time;
         life = GameObject.FindGameObjectsWithTag("Life");
         qtdLife = life.Length;
+        extraJumps = extraJumpsValue;
     }
 
+    void Update()
+    {
+        if(isGrounded == true)
+        {
+            extraJumps = extraJumpsValue;
+        }
+        //KeyCode.X
+        if (Input.GetKeyDown(KeyCode.UpArrow) && extraJumps > 0)
+        {
+            rb.velocity = Vector2.up * jumpForce;
+            extraJumps--;
+            //rb.AddForce(new Vector2(0, jumpForce));
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && extraJumps == 0 && isGrounded == true)
+        {
+            rb.velocity = Vector2.up * jumpForce;
+        }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
-
         if (dead == false)
         {
             //Character doesnt choose direction in Jump									//If you want to choose direction in jump
@@ -52,7 +83,7 @@ public class Fox_Move : MonoBehaviour
                     Ladder();
 
                 }
-                //Jump();
+                Jump();
                 Crouch();
             }
             Dead();
@@ -139,41 +170,39 @@ public class Fox_Move : MonoBehaviour
         {
             anim.SetBool("Running", false);
         }
-
-
-        
-
-
     }
 
     void Jump()
     {
         //Jump
-        if (Input.GetKeyDown(KeyCode.X) && rb.velocity.y == 0)
-        {
-            rb.AddForce(new Vector2(0, jumpForce));
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
 
-        }
-        //Jump Animation
-        if (rb.velocity.y > 0 && up == false)
+        if (isGrounded == true)
         {
-            up = true;
-            jumping = true;
-            anim.SetTrigger("Up");
+            extraJumps = 2;
         }
-        else if (rb.velocity.y < 0 && down == false)
-        {
-            down = true;
-            jumping = true;
-            anim.SetTrigger("Down");
-        }
-        else if (rb.velocity.y == 0 && (up == true || down == true))
-        {
-            up = false;
-            down = false;
-            jumping = false;
-            anim.SetTrigger("Ground");
-        }
+        ////Jump Animation
+        //if (rb.velocity.y > 0 && up == false)
+        ////
+        //{
+        //    up = true;
+        //    jumping = true;
+        //    anim.SetTrigger("Up");
+        //}
+        //else if (rb.velocity.y < 0 && down == false)
+        //    //
+        //{
+        //    down = true;
+        //    jumping = true;
+        //    anim.SetTrigger("Down");
+        //}
+        //else if (rb.velocity.y == 0 && (up == true || down == true)
+        //{//)
+        //    up = false;
+        //    down = false;
+        //    jumping = false;
+        //    anim.SetTrigger("Ground");
+        //}
     }
 
     void Attack()
