@@ -80,11 +80,10 @@ public class Fox_Move : MonoBehaviour
                     Movement();
                     Attack();
                     Special();
-                    Ladder();
-
                 }
                 Jump();
                 Crouch();
+                Ladder();
             }
             Dead();
         }
@@ -109,6 +108,7 @@ public class Fox_Move : MonoBehaviour
         {
             isClimbing = false;
         }
+
         if (isClimbing == true)
         {
             inputVertical = Input.GetAxisRaw("Vertical");
@@ -173,31 +173,31 @@ public class Fox_Move : MonoBehaviour
     {
         //Jump
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
-
         if (isGrounded == true)
         {
             extraJumps = 2;
         }
+
         //Jump Animation
-        //if (rb.velocity.y > 0 && up == false)
-        //{
-        //    up = true;
-        //    jumping = true;
-        //    anim.SetTrigger("Up");
-        //}
-        //else if (rb.velocity.y < 0 && down == false)
-        //{
-        //    down = true;
-        //    jumping = true;
-        //    anim.SetTrigger("Down");
-        //}
-        //else if (rb.velocity.y == 0 && (up == true || down == true))
-        //{
-        //    up = false;
-        //    down = false;
-        //    jumping = false;
-        //    anim.SetTrigger("Ground");
-        //}
+        if (rb.velocity.y > 0 && up == false)
+        {
+            up = true;
+            jumping = true;
+            anim.SetTrigger("Up");
+        }
+        else if (rb.velocity.y < 0 && down == false)
+        {
+            down = true;
+            jumping = true;
+            anim.SetTrigger("Down");
+        }
+        else if (rb.velocity.y == 0 && (up == true || down == true))
+        {
+            up = false;
+            down = false;
+            jumping = false;
+            anim.SetTrigger("Ground");
+        }
     }
 
     void Attack()
