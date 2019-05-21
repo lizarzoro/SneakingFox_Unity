@@ -94,7 +94,7 @@ public class Fox_Move : MonoBehaviour
     void Ladder()
     {
         inputHorizontal = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(inputHorizontal * speed, rb.velocity.y);
+        //rb.velocity = new Vector2(inputHorizontal * speed, rb.velocity.y);
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.up, distance, whatIsLadder);
 
         if (hitInfo.collider != null)
