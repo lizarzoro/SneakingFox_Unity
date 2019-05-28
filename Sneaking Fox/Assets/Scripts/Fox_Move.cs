@@ -298,9 +298,9 @@ public class Fox_Move : MonoBehaviour
         if (rateOfHit < Time.time)
         {
             rateOfHit = Time.time + cooldownHit;
-            Destroy(life[qtdLife - 1]);
+            //Destroy(life[qtdLife - 1]);
             Destroy(hearts[numOfHearts - 1]);
-            qtdLife -= 1;
+            //qtdLife -= 1;
             numOfHearts -= 1;
         }
     }
