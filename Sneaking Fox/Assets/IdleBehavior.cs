@@ -4,6 +4,23 @@ using UnityEngine;
 
 public class IdleBehavior : StateMachineBehaviour
 {
+    public Transform sightStart, sightEnd;
+
+    void Update()
+    {
+        Raycasting();
+        Behaviours();
+    }
+
+    void Raycasting()
+    {
+        Debug.DrawLine(sightStart.position, sightEnd.position, Color.green);
+    }
+    void Behaviours()
+    {
+
+    }
+
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
 
@@ -22,15 +39,5 @@ public class IdleBehavior : StateMachineBehaviour
 
     }
 
-    // OnStateMove is called right after Animator.OnAnimatorMove()
-    //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that processes and affects root motion
-    //}
 
-    // OnStateIK is called right after Animator.OnAnimatorIK()
-    //override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    // Implement code that sets up animation IK (inverse kinematics)
-    //}
 }
