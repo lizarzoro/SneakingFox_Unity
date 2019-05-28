@@ -1,6 +1,7 @@
 ﻿using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Fox_Move : MonoBehaviour
 {
@@ -13,9 +14,15 @@ public class Fox_Move : MonoBehaviour
     private float rateOfHit;
     private GameObject[] life;
     private int qtdLife;
-    
+
     private float inputHorizontal, inputVertical;
-    
+
+    // 라이프
+    public int health;
+    public int numOfHearts;
+    public Image[] hearts;
+    public Sprite fullheart;
+    public Sprite emptyheart;
 
     // 사다리 타기
     public LayerMask whatIsLadder;
@@ -50,7 +57,7 @@ public class Fox_Move : MonoBehaviour
 
     void Update()
     {
-        if(isGrounded == true)
+        if (isGrounded == true)
         {
             extraJumps = extraJumpsValue;
         }
@@ -65,6 +72,33 @@ public class Fox_Move : MonoBehaviour
         {
             rb.velocity = Vector2.up * jumpForce;
         }
+
+        // 생명
+        for(int i = 0; i < hearts.Length; i++)
+        {
+            if(i < health)
+            {
+                hearts[i].sprite = fullheart;
+            }
+            else
+            {
+                hearts[i].sprite = emptyheart;
+            }
+
+            if (i < numOfHearts)
+            {
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
+        }
+
+        if(health > numOfHearts)
+        {
+            health = numOfHearts;
+        }
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -76,15 +110,14 @@ public class Fox_Move : MonoBehaviour
             {                                                   //just delete the (jumping==false)
                 if (jumping == false && crouching == false)
                 {
-                    
+
                     Movement();
                     Attack();
                     Special();
-                    Ladder();
-
                 }
                 Jump();
                 Crouch();
+                Ladder();
             }
             Dead();
         }
@@ -109,6 +142,7 @@ public class Fox_Move : MonoBehaviour
         {
             isClimbing = false;
         }
+
         if (isClimbing == true)
         {
             inputVertical = Input.GetAxisRaw("Vertical");
@@ -125,7 +159,7 @@ public class Fox_Move : MonoBehaviour
 
     void Movement()
     {
-        
+
         //Character Move
         float move = Input.GetAxisRaw("Horizontal");
         if (Input.GetKey(KeyCode.Z))
@@ -173,31 +207,31 @@ public class Fox_Move : MonoBehaviour
     {
         //Jump
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
-
         if (isGrounded == true)
         {
             extraJumps = 2;
         }
+
         //Jump Animation
-        //if (rb.velocity.y > 0 && up == false)
-        //{
-        //    up = true;
-        //    jumping = true;
-        //    anim.SetTrigger("Up");
-        //}
-        //else if (rb.velocity.y < 0 && down == false)
-        //{
-        //    down = true;
-        //    jumping = true;
-        //    anim.SetTrigger("Down");
-        //}
-        //else if (rb.velocity.y == 0 && (up == true || down == true))
-        //{
-        //    up = false;
-        //    down = false;
-        //    jumping = false;
-        //    anim.SetTrigger("Ground");
-        //}
+        if (rb.velocity.y > 0 && up == false)
+        {
+            up = true;
+            jumping = true;
+            anim.SetTrigger("Up");
+        }
+        else if (rb.velocity.y < 0 && down == false)
+        {
+            down = true;
+            jumping = true;
+            anim.SetTrigger("Down");
+        }
+        else if (rb.velocity.y == 0 && (up == true || down == true))
+        {
+            up = false;
+            down = false;
+            jumping = false;
+            anim.SetTrigger("Ground");
+        }
     }
 
     void Attack()
@@ -265,17 +299,21 @@ public class Fox_Move : MonoBehaviour
         {
             rateOfHit = Time.time + cooldownHit;
             Destroy(life[qtdLife - 1]);
+            Destroy(hearts[numOfHearts - 1]);
             qtdLife -= 1;
+            numOfHearts -= 1;
         }
     }
 
     void Dead()
     {
-        if (qtdLife <= 0)
+        if (numOfHearts <= 0)
         {
             anim.SetTrigger("Dead");
             dead = true;
 
+            // restart
+            //Application.LoadLevel(Application.LoadLevel);
         }
     }
 
