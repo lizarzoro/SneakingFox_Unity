@@ -9,6 +9,7 @@ TagManager:
   - Soda
   - Food
   - Life
+  - bush
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - 
   - Ground
   - Ladder
-  - 
-  - 
+  - Fox
+  - Enemy
   - 
   - 
   - 

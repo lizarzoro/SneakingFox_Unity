@@ -37,6 +37,10 @@ public class Fox_Move : MonoBehaviour
     private int extraJumps;
     public int extraJumpsValue;
 
+    // 숨기
+    private bool canHide = false;
+    private bool hiding = false;
+
     // Use this for initialization
     void Start()
     {
@@ -57,6 +61,22 @@ public class Fox_Move : MonoBehaviour
 
     void Update()
     {
+        // 숨기
+        if (canHide && Input.GetKey("down"))
+        {
+            Physics2D.IgnoreLayerCollision(10, 11, true);
+            sp.sortingOrder = 1;
+            hiding = true;
+        }
+
+        else
+        {
+            Physics2D.IgnoreLayerCollision(10, 11, false);
+            sp.sortingOrder = 3;
+            hiding = false;
+        }
+
+
         if (isGrounded == true)
         {
             extraJumps = extraJumpsValue;
@@ -92,6 +112,8 @@ public class Fox_Move : MonoBehaviour
             else
             {
                 hearts[i].enabled = false;
+
+
             }
         }
 
@@ -103,6 +125,13 @@ public class Fox_Move : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // 숨기
+        if (!hiding)
+            rb.velocity = new Vector2(inputHorizontal, rb.velocity.y);
+        else
+            rb.velocity = Vector2.zero;
+
+
         if (dead == false)
         {
             //Character doesnt choose direction in Jump									//If you want to choose direction in jump
@@ -122,6 +151,17 @@ public class Fox_Move : MonoBehaviour
             Dead();
         }
 
+    }
+
+    // 부쉬 찾기
+
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.name.Equals("bush"))
+        {
+            canHide = false;
+        }
     }
 
     void Ladder()
@@ -235,8 +275,7 @@ public class Fox_Move : MonoBehaviour
     }
 
     void Attack()
-    {                                                               //I activated the attack animation and when the 
-                                                                    //Atacking																//animation finish the event calls the AttackEnd()
+    {                                                               //Atacking																//animation finish the event calls the AttackEnd()
         if (Input.GetKeyDown(KeyCode.C))
         {
             rb.velocity = new Vector2(0, 0);
@@ -281,6 +320,11 @@ public class Fox_Move : MonoBehaviour
         {
             anim.SetTrigger("Damage");
             Hurt();
+        }
+
+        if (other.tag == "bush")
+        {
+            canHide = true;
         }
     }
 
