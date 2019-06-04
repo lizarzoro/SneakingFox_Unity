@@ -7,10 +7,15 @@ public class FollowBehavior : StateMachineBehaviour
     private Transform playerPos;
     public float speed;
 
+    //void Start()
+    //{
+    //   // Fox_Move fox_move = GameObject.Find("Player").GetComponent<Fox_Move>();
+    //}
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         playerPos = GameObject.FindGameObjectWithTag("Player").transform;
+        
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -18,10 +23,15 @@ public class FollowBehavior : StateMachineBehaviour
     {
         animator.transform.position = Vector2.MoveTowards(animator.transform.position, playerPos.position, speed * Time.deltaTime);
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (!Fox_Move.hiding)
         {
-            animator.SetBool("isFollowing", false);
+            if (Input.GetKeyDown("down"))
+            {
+                animator.SetBool("isFollowing", false);
+            }
         }
+
+
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

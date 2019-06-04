@@ -39,7 +39,7 @@ public class Fox_Move : MonoBehaviour
 
     // 숨기
     private bool canHide = false;
-    private bool hiding = false;
+    public static bool hiding = false;
 
     // Use this for initialization
     void Start()
