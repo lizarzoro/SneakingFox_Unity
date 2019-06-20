@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Fox_Move : MonoBehaviour
 {
-
     public float speed, jumpForce, cooldownHit;
     public bool running, up, down, jumping, crouching, dead, attacking, special, isClimbing;
     private Rigidbody2D rb;
@@ -15,7 +14,14 @@ public class Fox_Move : MonoBehaviour
     private GameObject[] life;
     private int qtdLife;
 
-    private float inputHorizontal, inputVertical;
+    float inputHorizontal, inputVertical = 0f;
+    bool jump = false;
+    bool crouch = false;
+
+    // 이동2
+    public C_Controller controller;
+    public float runSpeed = 40f;
+    public float MoveH = 0f;
 
     // 라이프
     public int health;
@@ -41,6 +47,9 @@ public class Fox_Move : MonoBehaviour
     private bool canHide = false;
     public static bool hiding = false;
 
+    // 경사로 애니메이션 오류 대응
+    private bool onSlope = false;
+
     // Use this for initialization
     void Start()
     {
@@ -61,20 +70,7 @@ public class Fox_Move : MonoBehaviour
 
     void Update()
     {
-        // 숨기
-        if (canHide && Input.GetKey("down"))
-        {
-            Physics2D.IgnoreLayerCollision(10, 11, true);
-            sp.sortingOrder = 1;
-            hiding = true;
-        }
 
-        else
-        {
-            Physics2D.IgnoreLayerCollision(10, 11, false);
-            sp.sortingOrder = 3;
-            hiding = false;
-        }
 
 
         if (isGrounded == true)
@@ -94,9 +90,9 @@ public class Fox_Move : MonoBehaviour
         }
 
         // 생명
-        for(int i = 0; i < hearts.Length; i++)
+        for (int i = 0; i < hearts.Length; i++)
         {
-            if(i < health)
+            if (i < health)
             {
                 hearts[i].sprite = fullheart;
             }
@@ -117,32 +113,48 @@ public class Fox_Move : MonoBehaviour
             }
         }
 
-        if(health > numOfHearts)
+        if (health > numOfHearts)
         {
             health = numOfHearts;
         }
+
+        inputHorizontal = Input.GetAxisRaw("Horizontal") * speed;
+
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jump = true;
+        }
+
+        if (Input.GetButtonDown("Crouch"))
+        {
+            crouch = true;
+        }
+        else if (Input.GetButtonUp("Crouch"))
+        {
+            crouch = false;
+        }
     }
-    // Update is called once per frame
+
     void FixedUpdate()
     {
-        // 숨기
-        if (!hiding)
-            rb.velocity = new Vector2(inputHorizontal, rb.velocity.y);
-        else
-            rb.velocity = Vector2.zero;
+        controller.Move(inputHorizontal * Time.fixedDeltaTime, crouch, jump);
+        jump = false;
 
 
         if (dead == false)
         {
-            //Character doesnt choose direction in Jump									//If you want to choose direction in jump
+            //Character doesnt choose direction in Jump									
+            //If you want to choose direction in jump
             if (attacking == false)
-            {                                                   //just delete the (jumping==false)
+            {                                                   
+                //just delete the (jumping==false)
                 if (jumping == false && crouching == false)
                 {
-
                     Movement();
                     Attack();
                     Special();
+                    Hide();
                 }
                 Jump();
                 Crouch();
@@ -153,21 +165,100 @@ public class Fox_Move : MonoBehaviour
 
     }
 
-    // 부쉬 찾기
-
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.name.Equals("bush"))
+    // 충돌 물체 확인
+    void OnTriggerEnter2D(Collider2D other)
+    {                           //Case of Bullet
+        if (other.tag == "Enemy")
         {
-            canHide = false;
+            anim.SetTrigger("Damage");
+            Hurt();
+        }
+
+        else if (other.tag == "bush")
+        {
+            canHide = true;
+        }
+
+        else if (other.tag == "slope")
+        {
+            onSlope = true;
         }
     }
 
+    // 부쉬 찾기, 경사로 나올 때
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.tag.Equals("bush"))
+        {
+            canHide = false;
+        }
+
+        else if (other.gameObject.tag.Equals("slope"))
+        {
+            onSlope = false;
+        }
+    }
+
+    void Movement()
+    {
+        if (Input.GetKey(KeyCode.Z))
+        {
+            //Run
+            rb.velocity = new Vector2(inputHorizontal * speed * Time.deltaTime * 3, rb.velocity.y);
+            running = true;
+        }
+        else
+        {
+            //Walk
+            rb.velocity = new Vector2(inputHorizontal * speed * Time.deltaTime, rb.velocity.y);
+            running = false;
+        }
+
+        if (rb.velocity.x != 0 && running == false)
+        {
+            //anim.SetTrigger("Walking");
+            anim.SetBool("Walking", true);
+        }
+        else
+        {
+            anim.SetBool("Walking", false);
+        }
+        if (rb.velocity.x != 0 && running == true)
+        {
+            anim.SetBool("Running", true);
+        }
+        else
+        {
+            anim.SetBool("Running", false);
+        }
+    }
+
+    void Hide()
+    {
+        // 숨기
+        if (canHide && Input.GetKey("down"))
+        {
+            Physics2D.IgnoreLayerCollision(10, 11, true);
+            sp.sortingOrder = 1;
+            hiding = true;
+        }
+
+        else
+        {
+            Physics2D.IgnoreLayerCollision(10, 11, false);
+            sp.sortingOrder = 3;
+            hiding = false;
+        }
+        // 숨은 상태에서 움직이기?
+        if (!hiding)
+            rb.velocity = new Vector2(inputHorizontal, rb.velocity.y);
+        else
+            rb.velocity = Vector2.zero;
+    }
     void Ladder()
     {
         inputHorizontal = Input.GetAxisRaw("Horizontal");
-        //rb.velocity = new Vector2(inputHorizontal * speed, rb.velocity.y);
+        rb.velocity = new Vector2(inputHorizontal * speed, rb.velocity.y);
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.up, distance, whatIsLadder);
 
         if (hitInfo.collider != null)
@@ -197,52 +288,6 @@ public class Fox_Move : MonoBehaviour
         }
     }
 
-    void Movement()
-    {
-
-        //Character Move
-        float move = Input.GetAxisRaw("Horizontal");
-        if (Input.GetKey(KeyCode.Z))
-        {
-            //Run
-            rb.velocity = new Vector2(move * speed * Time.deltaTime * 3, rb.velocity.y);
-            running = true;
-        }
-        else
-        {
-            //Walk
-            rb.velocity = new Vector2(move * speed * Time.deltaTime, rb.velocity.y);
-            running = false;
-        }
-
-        //Turn
-        if (rb.velocity.x < 0)
-        {
-            sp.flipX = true;
-        }
-        else if (rb.velocity.x > 0)
-        {
-            sp.flipX = false;
-        }
-        //Movement Animation
-        if (rb.velocity.x != 0 && running == false)
-        {
-            anim.SetBool("Walking", true);
-        }
-        else
-        {
-            anim.SetBool("Walking", false);
-        }
-        if (rb.velocity.x != 0 && running == true)
-        {
-            anim.SetBool("Running", true);
-        }
-        else
-        {
-            anim.SetBool("Running", false);
-        }
-    }
-
     void Jump()
     {
         //Jump
@@ -253,13 +298,13 @@ public class Fox_Move : MonoBehaviour
         }
 
         //Jump Animation
-        if (rb.velocity.y > 0 && up == false)
+        if (rb.velocity.y > 0 && up == false && onSlope == false)
         {
             up = true;
             jumping = true;
             anim.SetTrigger("Up");
         }
-        else if (rb.velocity.y < 0 && down == false)
+        else if (rb.velocity.y < 0 && down == false && onSlope == false)
         {
             down = true;
             jumping = true;
@@ -314,19 +359,6 @@ public class Fox_Move : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {                           //Case of Bullet
-        if (other.tag == "Enemy")
-        {
-            anim.SetTrigger("Damage");
-            Hurt();
-        }
-
-        if (other.tag == "bush")
-        {
-            canHide = true;
-        }
-    }
 
     void OnCollisionEnter2D(Collision2D other)
     {                       //Case of Touch
@@ -355,7 +387,7 @@ public class Fox_Move : MonoBehaviour
         {
             anim.SetTrigger("Dead");
             dead = true;
-
+            SceneManager.LoadScene(0);
             // restart
             //Application.LoadLevel(Application.LoadLevel);
         }
