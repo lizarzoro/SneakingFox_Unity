@@ -364,7 +364,7 @@ public class Fox_Move : MonoBehaviour
     {                       //Case of Touch
         if (other.gameObject.tag == "Enemy")
         {
-            anim.SetTrigger("Damage");
+            //anim.SetTrigger("Damage");
             Hurt();
         }
     }
