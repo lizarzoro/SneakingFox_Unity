@@ -21335,7 +21335,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38.2, y: 24.11, z: -10}
+  m_LocalPosition: {x: 2.3999999, y: 3.5, z: -10}
   m_LocalScale: {x: 0.59, y: 0.43, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -70677,8 +70677,8 @@ MonoBehaviour:
   extraJumpsValue: 1
   whatIsLadder:
     serializedVersion: 2
-    m_Bits: 0
-  distance: 0
+    m_Bits: 512
+  distance: 1
 --- !u!1 &1786312461
 GameObject:
   m_ObjectHideFlags: 0
@@ -71006,7 +71006,7 @@ GameObject:
   - component: {fileID: 1792475419}
   - component: {fileID: 1792475418}
   - component: {fileID: 1792475420}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: street-lamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71164,7 +71164,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794444422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38.2, y: 24.11, z: -10}
+  m_LocalPosition: {x: 2.3999999, y: 3.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 492129564}
@@ -85142,12 +85142,12 @@ PrefabInstance:
     - target: {fileID: 2121943980104516463, guid: ef7410a284814ba4890d57dc7220d39a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 38.2
+      value: 2.4
       objectReference: {fileID: 0}
     - target: {fileID: 2121943980104516463, guid: ef7410a284814ba4890d57dc7220d39a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.11
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 2121943980104516463, guid: ef7410a284814ba4890d57dc7220d39a,
         type: 3}
